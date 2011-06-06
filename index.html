@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>Shit Storm</title>
+<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+</style>
+</head>
+<body>
+<div id="main">
+</div>
+</body>
+<!-- 
+<script src="lib/zepto.min.js" type="text/javascript"></script>
+ -->
+<script src="lib/THREE.js" type="text/javascript"></script>
+<script src="Wrapper.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+var GaussRnd = function(mean, standardDeviation) {
+	standardDeviation = standardDeviation ? standardDeviation : mean * .1;
+	return mean + ((-1 + Math.random()*2) * standardDeviation ); 	
+}
+
+
+var particles = [];
+for (var i = 0; i < 566; i++) {
+	var particle = new THREE.Particle( new THREE.ParticleCircleMaterial( Math.random() * 0x808008 + 0x808080, 1 ) );
+	particle.scale.x = particle.scale.y = Math.random() * 10 + 5;
+	particle.xtd = {
+			mv : new THREE.Vector3(
+					GaussRnd(5.8e-4),
+					GaussRnd(1e-4),
+					GaussRnd(1e-4)
+					),
+			x: GaussRnd(1000, 500) ,
+			y: GaussRnd(60),
+			z: GaussRnd(1000, 500)
+						}
+	particles.push(particle);
+}
+var rock =new THREE.Particle( new THREE.ParticleCircleMaterial(0x202020, 1 ) );
+rock.scale.x = rock.scale.y = 80;
+particles.push(rock);
+
+var sceneTick = function(){
+	var tick = new Date().valueOf();
+	for (var i = 0; i < particles.length; i++) {
+		var p = particles[i];
+		if(p.xtd){
+			p.position.x = Math.round( Math.cos(p.xtd.mv.x * tick) * p.xtd.x);
+			p.position.y = Math.round( Math.sin(p.xtd.mv.y * tick) * p.xtd.y);
+			p.position.z = Math.round( Math.sin(p.xtd.mv.x * tick) * p.xtd.z);
+		}
+	}
+}
+
+Wrapper({
+			particles: particles,
+			sceneTick: sceneTick
+
+		});
+
+
+</script>
+</html>
